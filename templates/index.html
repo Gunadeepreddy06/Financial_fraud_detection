@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Financial Risk Analysis Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="sidebar">
+
+        <h2>FinGuard</h2>
+
+        <p class="subtitle">Financial Security System</p>
+
+        <nav>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#transactions">Transactions</a>
+            <a href="#transaction-form">Manage Transaction</a>
+            <a href="#alerts">Fraud Alerts</a>
+            <a href="#charts">Analytics</a>
+        </nav>
+
+    </div>
+
+
+    <main class="main-content">
+
+        <header>
+            <div>
+                <h1>Financial Risk Dashboard</h1>
+                <p>Monitor transactions and detect suspicious activities.</p>
+            </div>
+
+            <span class="status">System Online</span>
+        </header>
+
+
+        <!-- Dashboard Summary -->
+
+        <section id="dashboard">
+
+            <h2>Overview</h2>
+
+            <div class="cards">
+
+                <div class="card">
+                    <h3>Total Transactions</h3>
+                    <p id="totalTransactions">0</p>
+                </div>
+
+                <div class="card">
+                    <h3>Total Amount</h3>
+                    <p id="totalAmount">₹0</p>
+                </div>
+
+                <div class="card">
+                    <h3>Average Amount</h3>
+                    <p id="averageAmount">₹0</p>
+                </div>
+
+                <div class="card">
+                    <h3>Pending Alerts</h3>
+                    <p id="pendingAlerts">0</p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Transaction Form -->
+
+        <section id="transaction-form">
+
+            <h2 id="formTitle">Add New Transaction</h2>
+
+            <form id="transactionForm">
+
+                <input
+                    type="hidden"
+                    id="transactionId"
+                >
+
+                <div class="form-grid">
+
+                    <div>
+                        <label>Account ID</label>
+
+                        <input
+                            type="number"
+                            id="accountId"
+                            required
+                            min="1"
+                            placeholder="Enter account ID"
+                        >
+                    </div>
+
+
+                    <div>
+                        <label>Transaction Amount</label>
+
+                        <input
+                            type="number"
+                            id="amount"
+                            required
+                            min="0.01"
+                            step="0.01"
+                            placeholder="Enter amount"
+                        >
+                    </div>
+
+
+                    <div>
+                        <label>Transaction Date</label>
+
+                        <input
+                            type="datetime-local"
+                            id="transactionDate"
+                            required
+                        >
+                    </div>
+
+
+                    <div>
+                        <label>Transaction Type</label>
+
+                        <select id="transactionType" required>
+
+                            <option value="">Select Type</option>
+
+                            <option value="DEPOSIT">Deposit</option>
+
+                            <option value="WITHDRAWAL">Withdrawal</option>
+
+                            <option value="TRANSFER">Transfer</option>
+
+                        </select>
+                    </div>
+
+
+                    <div>
+                        <label>Channel</label>
+
+                        <select id="channel" required>
+
+                            <option value="">Select Channel</option>
+
+                            <option value="ATM">ATM</option>
+
+                            <option value="ONLINE">Online</option>
+
+                            <option value="MOBILE">Mobile</option>
+
+                            <option value="BRANCH">Branch</option>
+
+                            <option value="POS">POS</option>
+
+                        </select>
+                    </div>
+
+
+                    <div>
+                        <label>Region</label>
+
+                        <input
+                            type="text"
+                            id="region"
+                            placeholder="Enter region"
+                        >
+                    </div>
+
+                </div>
+
+
+                <div class="buttons">
+
+                    <button type="submit" id="submitButton">
+                        Add Transaction
+                    </button>
+
+                    <button
+                        type="button"
+                        id="cancelButton"
+                        class="cancel"
+                        onclick="resetForm()"
+                        hidden
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+            <p id="message"></p>
+
+        </section>
+
+
+        <!-- Transactions Table -->
+
+        <section id="transactions">
+
+            <div class="section-heading">
+
+                <h2>Recent Transactions</h2>
+
+                <button onclick="loadTransactions()">
+                    Refresh
+                </button>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Account</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                            <th>Channel</th>
+                            <th>Region</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="transactionTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- Fraud Alerts -->
+
+        <section id="alerts">
+
+            <h2>Fraud Alerts</h2>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Alert ID</th>
+                            <th>Transaction ID</th>
+                            <th>Amount</th>
+                            <th>Risk Score</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="alertTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- Analytics Charts -->
+
+        <section id="charts">
+
+            <h2>Financial Analytics</h2>
+
+            <div class="chart-grid">
+
+                <div class="chart-card">
+                    <h3>Transaction Amount Distribution</h3>
+
+                    <img
+                        src="/charts/transaction_distribution.png"
+                        alt="Transaction distribution chart"
+                    >
+                </div>
+
+
+                <div class="chart-card">
+                    <h3>Transactions by Type</h3>
+
+                    <img
+                        src="/charts/transaction_types.png"
+                        alt="Transaction types chart"
+                    >
+                </div>
+
+
+                <div class="chart-card">
+                    <h3>Risk Score Distribution</h3>
+
+                    <img
+                        src="/charts/risk_distribution.png"
+                        alt="Risk distribution chart"
+                    >
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <footer>
+            Financial Risk Analysis and Rule-Based Fraud Detection System
+        </footer>
+
+    </main>
+
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>
